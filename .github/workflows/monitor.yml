@@ -1,0 +1,48 @@
+name: Completude Monitor
+
+on:
+  schedule:
+    # Runs every 5 minutes. Times are UTC and can occasionally be delayed
+    # a few minutes by GitHub during busy periods — this is normal and free.
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+    # This adds a manual "Run workflow" button on the Actions tab, so you
+    # can trigger a test run immediately without waiting for the schedule.
+
+permissions:
+  contents: write
+  # Needed so the workflow can save/commit seen_offers.json and
+  # token_cache.json back into the repo between runs.
+
+jobs:
+  check-for-offers:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run the monitor
+        env:
+          COMPLETUDE_USERNAME: ${{ secrets.COMPLETUDE_USERNAME }}
+          COMPLETUDE_PASSWORD: ${{ secrets.COMPLETUDE_PASSWORD }}
+          SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
+          SMTP_APP_PASSWORD: ${{ secrets.SMTP_APP_PASSWORD }}
+          EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+        run: python monitor.py
+
+      - name: Save updated state back to the repo
+        run: |
+          git config user.name "completude-monitor-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add seen_offers.json token_cache.json 2>/dev/null || true
+          git diff --staged --quiet || git commit -m "Update monitor state"
+          git push
