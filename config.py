@@ -7,7 +7,7 @@
 # in token_cache.json until it's about to expire.
 # NOTE: stored in plain text — never upload this file with real values
 # filled in anywhere public (e.g. a public GitHub repo).
-COMPLETUDE_USERNAME = "h.adriouche"
+COMPLETUDE_USERNAME = "username"
 COMPLETUDE_PASSWORD = "PASTE_YOUR_COMPLETUDE_PASSWORD_HERE"
 
 # --- Search parameters (from your captured request) ---
