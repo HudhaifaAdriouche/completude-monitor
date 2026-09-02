@@ -33,7 +33,7 @@ SESSION_RECHERCHE_EXTRA = {
 }
 
 # --- Filtering ---
-DISTANCE_THRESHOLD_KM = 7.0
+DISTANCE_THRESHOLD_KM = 9.0
 
 # --- Email notifications (free, via SMTP) ---
 SMTP_SERVER = "smtp.gmail.com"
